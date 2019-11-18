@@ -9,8 +9,8 @@
 
 namespace PID {
 PIDError Controller::GetAndClearError() {
-  auto err = PIDGetError((PID) &controller);
-  PIDClearError((PID) &controller);
+  auto err = PIDGetError((PIDController) &controller);
+  PIDClearError((PIDController) &controller);
   return err;
 }
 
@@ -22,38 +22,38 @@ std::tuple<PIDError> Controller::Init() {
 }
 
 std::tuple<PIDError> Controller::SetGains(double kp, double ki, double kd) {
-  PIDSetGains((PID) &controller, kp, ki, kd);
+  PIDSetGains((PIDController) &controller, kp, ki, kd);
   return std::make_tuple(GetAndClearError());
 }
 
 std::tuple<double, double, double, PIDError> Controller::GetGains() {
   double kp, ki, kd;
-  PIDGetGains((PID) &controller, &kp, &ki, &kd);
+  PIDGetGains((PIDController) &controller, &kp, &ki, &kd);
   return std::make_tuple(kp, ki, kd, GetAndClearError());
 }
 
 std::tuple<PIDError> Controller::SetIntegralLimit(double max) {
-  PIDSetIntegralLimit((PID) &controller, max);
+  PIDSetIntegralLimit((PIDController) &controller, max);
   return std::make_tuple(GetAndClearError());
 }
 
 std::tuple<double, PIDError> Controller::GetIntegralLimit() {
-  auto res = PIDGetIntegralLimit((PID) &controller);
+  auto res = PIDGetIntegralLimit((PIDController) &controller);
   return std::make_tuple(res, GetAndClearError());
 }
 
 std::tuple<double, PIDError> Controller::GetIntegral() {
-  auto res = PIDGetIntegral((PID) &controller);
+  auto res = PIDGetIntegral((PIDController) &controller);
   return std::make_tuple(res, GetAndClearError());
 }
 
 std::tuple<PIDError> Controller::ResetIntegral() {
-  PIDResetIntegral((PID) &controller);
+  PIDResetIntegral((PIDController) &controller);
   return std::make_tuple(GetAndClearError());
 }
 
 std::tuple<double, PIDError> Controller::Process(double error) {
-  auto res = PIDProcess((PID) &controller, error);
+  auto res = PIDProcess((PIDController) &controller, error);
   return std::make_tuple(res, GetAndClearError());
 }
 
@@ -65,12 +65,12 @@ double Controller::operator()(double error) {
 }
 
 std::tuple<PIDError> Controller::SetFrequency(double frequency) {
-  PIDSetFrequency((PID) &controller, frequency);
+  PIDSetFrequency((PIDController) &controller, frequency);
   return std::make_tuple(GetAndClearError());
 }
 
 std::tuple<double, PIDError> Controller::GetFrequency() {
-  auto res = PIDGetFrequency((PID) &controller);
+  auto res = PIDGetFrequency((PIDController) &controller);
   return std::make_tuple(res, GetAndClearError());
 }
 }

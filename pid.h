@@ -20,7 +20,7 @@ typedef enum { kPIDOk = 0, kPIDFreed, kPIDInvalidArgument } PIDError;
 // Instance of a PID controller.
 // Note that this structure is only public to be able to do static allocation of it.
 // Do not access its fields directly.
-struct _PID {
+struct _PIDController {
   double kp, ki, kd;
   double integrator;
   double previous_error;
@@ -29,55 +29,55 @@ struct _PID {
   PIDError error;
 };
 
-typedef struct _PID *PID;
+typedef struct _PIDController *PIDController;
 
 // Allocates and initializes a new PID controller on the **heap**.
-PID_EXT PID PIDNew();
+PID_EXT PIDController PIDNew();
 
 // Frees the PID controller created by PIDNew.
-PID_EXT void PIDFree(PID pid);
+PID_EXT void PIDFree(PIDController pid);
 
 // Returns the last error occurred in operations.
-PID_EXT PIDError PIDGetError(PID pid);
+PID_EXT PIDError PIDGetError(PIDController pid);
 
 // Clear the error field.
-PID_EXT void PIDClearError(PID pid);
+PID_EXT void PIDClearError(PIDController pid);
 
 // Initializes a PID controller.
-PID_EXT void PIDInit(PID pid);
+PID_EXT void PIDInit(PIDController pid);
 
 // Sets the gains of the given PID.
-PID_EXT void PIDSetGains(PID pid, double kp, double ki, double kd);
+PID_EXT void PIDSetGains(PIDController pid, double kp, double ki, double kd);
 
 // Returns the proportional gains of the controller.
-PID_EXT void PIDGetGains(PID pid, double *kp, double *ki, double *kd);
+PID_EXT void PIDGetGains(PIDController pid, double *kp, double *ki, double *kd);
 
 // Sets a maximum value for the PID integrator
-PID_EXT void PIDSetIntegralLimit(PID pid, double max);
+PID_EXT void PIDSetIntegralLimit(PIDController pid, double max);
 
 // Returns the limit of the PID integrator.
-PID_EXT double PIDGetIntegralLimit(PID pid);
+PID_EXT double PIDGetIntegralLimit(PIDController pid);
 
 // Returns the value of the PID integrator.
-PID_EXT double PIDGetIntegral(PID pid);
+PID_EXT double PIDGetIntegral(PIDController pid);
 
 // Resets the PID integrator to zero.
-PID_EXT void PIDResetIntegral(PID pid);
+PID_EXT void PIDResetIntegral(PIDController pid);
 
 // Process one step using the PID algorithm.
-PID_EXT double PIDProcess(PID pid, double error);
+PID_EXT double PIDProcess(PIDController pid, double error);
 
 // Sets the PID frequency for gain compensation.
-PID_EXT void PIDSetFrequency(PID pid, double frequency);
+PID_EXT void PIDSetFrequency(PIDController pid, double frequency);
 
 // Returns the PID frequency for gain compensation.
-PID_EXT double PIDGetFrequency(PID pid);
+PID_EXT double PIDGetFrequency(PIDController pid);
 
 #ifdef __cplusplus
 // Wrapper class
 class Controller {
  private:
-  _PID controller{};
+  _PIDController controller{};
 
   PIDError GetAndClearError();
  public:

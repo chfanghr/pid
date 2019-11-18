@@ -7,30 +7,30 @@
 #include <stdlib.h>
 #include <math.h>
 
-PID PIDNew() {
-  PID result = malloc(sizeof(struct _PID));
+PIDController PIDNew() {
+  PIDController result = malloc(sizeof(struct _PIDController));
   PIDInit(result);
   return result;
 }
 
-void PIDFree(PID pid) {
+void PIDFree(PIDController pid) {
   if (pid != NULL)
 	free(pid);
 }
 
-PIDError PIDGetError(PID pid) {
+PIDError PIDGetError(PIDController pid) {
   if (pid)
 	return pid->error;
   return kPIDFreed;
 }
 
-void PIDClearError(PID pid) {
+void PIDClearError(PIDController pid) {
   if (!pid)
 	return;
   pid->error = kPIDOk;
 }
 
-void PIDInit(PID pid) {
+void PIDInit(PIDController pid) {
   if (!pid)
 	return;
   PIDSetGains(pid, 1, 0, 0);
@@ -40,7 +40,7 @@ void PIDInit(PID pid) {
   pid->error = kPIDOk;
 }
 
-void PIDSetGains(PID pid, double kp, double ki, double kd) {
+void PIDSetGains(PIDController pid, double kp, double ki, double kd) {
   if (!pid)
 	return;
   if (isnan(kp) || isnan(ki) || isnan(kd)) {
@@ -52,7 +52,7 @@ void PIDSetGains(PID pid, double kp, double ki, double kd) {
   pid->kd = kd;
 }
 
-void PIDGetGains(PID pid, double *kp, double *ki, double *kd) {
+void PIDGetGains(PIDController pid, double *kp, double *ki, double *kd) {
   if (!pid)
 	return;
   if (!kp || !ki || !kd) {
@@ -64,7 +64,7 @@ void PIDGetGains(PID pid, double *kp, double *ki, double *kd) {
   *kd = pid->kd;
 }
 
-void PIDSetIntegralLimit(PID pid, double max) {
+void PIDSetIntegralLimit(PIDController pid, double max) {
   if (!pid)
 	return;
   if (isnan(max)) {
@@ -74,25 +74,25 @@ void PIDSetIntegralLimit(PID pid, double max) {
   pid->integrator_limit = max;
 }
 
-double PIDGetIntegralLimit(PID pid) {
+double PIDGetIntegralLimit(PIDController pid) {
   if (!pid)
 	return NAN;
   return pid->integrator_limit;
 }
 
-double PIDGetIntegral(PID pid) {
+double PIDGetIntegral(PIDController pid) {
   if (!pid)
 	return NAN;
   return pid->integrator;
 }
 
-void PIDResetIntegral(PID pid) {
+void PIDResetIntegral(PIDController pid) {
   if (!pid)
 	return;
   pid->integrator = 0;
 }
 
-void PIDSetFrequency(PID pid, double frequency) {
+void PIDSetFrequency(PIDController pid, double frequency) {
   if (!pid)
 	return;
   if (isnan(frequency)) {
@@ -102,13 +102,13 @@ void PIDSetFrequency(PID pid, double frequency) {
   pid->frequency = frequency;
 }
 
-double PIDGetFrequency(PID pid) {
+double PIDGetFrequency(PIDController pid) {
   if (!pid)
 	return NAN;
   return pid->frequency;
 }
 
-double PIDProcess(PID pid, double error) {
+double PIDProcess(PIDController pid, double error) {
   if (!pid)
 	return NAN;
   if (isnan(error)) {
